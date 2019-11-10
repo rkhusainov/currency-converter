@@ -24,7 +24,7 @@ public class CurrencyAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public CurrencyData getItem(int position) {
         return mCurrencies.get(position);
     }
 
@@ -42,7 +42,7 @@ public class CurrencyAdapter extends BaseAdapter {
             convertView.setTag(holder);
         }
 
-        CurrencyData currency = (CurrencyData) getItem(position);
+        CurrencyData currency = getItem(position);
         CurrencyHolder holder = (CurrencyHolder) convertView.getTag();
         if (currency != null) {
             String text = currency.getName();
@@ -54,7 +54,7 @@ public class CurrencyAdapter extends BaseAdapter {
     private static class CurrencyHolder {
         private TextView mCurrencyName;
 
-        public CurrencyHolder(View view) {
+        private CurrencyHolder(View view) {
             mCurrencyName = view.findViewById(android.R.id.text1);
         }
     }

@@ -14,6 +14,9 @@ public class CurrencyResponse {
     @ElementList(inline = true)
     private List<CurrencyData> mCurrencyList;
 
+    public CurrencyResponse() {
+    }
+
     @NonNull
     public List<CurrencyData> getCurrencyList() {
         return new ArrayList<>(mCurrencyList);

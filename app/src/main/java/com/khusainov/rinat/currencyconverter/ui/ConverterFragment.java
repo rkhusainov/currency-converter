@@ -1,6 +1,7 @@
 package com.khusainov.rinat.currencyconverter.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.khusainov.rinat.currencyconverter.ConversionHelper;
 import com.khusainov.rinat.currencyconverter.R;
 import com.khusainov.rinat.currencyconverter.model.CurrencyData;
 import com.khusainov.rinat.currencyconverter.model.CurrencyResponse;
@@ -28,6 +30,8 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
+import static android.content.ContentValues.TAG;
+
 public class ConverterFragment extends Fragment {
 
     private Spinner mSpinnerFrom;
@@ -39,6 +43,8 @@ public class ConverterFragment extends Fragment {
     private View mLoadingView;
     private List<CurrencyData> mCurrencyDataList = new ArrayList<>();
     private Disposable mDisposable;
+
+    private ConversionHelper mConversionHelper = new ConversionHelper();
 
     public static ConverterFragment newInstance() {
         return new ConverterFragment();
@@ -59,27 +65,59 @@ public class ConverterFragment extends Fragment {
         mConversionRateTextView = view.findViewById(R.id.tv_conversion_rate);
         mConvertButton = view.findViewById(R.id.btn_convert);
         mLoadingView = view.findViewById(R.id.loading_view);
-        loadCurrencies();
+    }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        loadCurrencies();
         initSpinnerFrom();
         initSpinnerTo();
 
         mConvertButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String converted =
+                        mConversionHelper.convert(
+                                mCurrencyDataList,
+                                mSpinnerFrom.getSelectedItemPosition(),
+                                mSpinnerTo.getSelectedItemPosition(),
+                                Double.parseDouble(mFromAmount.getText().toString()));
+//                mResultTextView.setText(converted);
 
+                Toast.makeText(getContext(), mCurrencyDataList.get(0).getName(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void initSpinnerFrom() {
         mSpinnerFrom.setAdapter(new CurrencyAdapter(mCurrencyDataList));
-        mSpinnerFrom.setOnItemSelectedListener(new OnCurrencySelectedListener());
+        mSpinnerFrom.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getContext(), "SELECT 1", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onItemSelected: " + position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
     }
 
     private void initSpinnerTo() {
         mSpinnerTo.setAdapter(new CurrencyAdapter(mCurrencyDataList));
-        mSpinnerTo.setOnItemSelectedListener(new OnCurrencySelectedListener());
+        mSpinnerTo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getContext(), "SELECT 2", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "onItemSelected: " + position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
     }
 
 
@@ -105,18 +143,6 @@ public class ConverterFragment extends Fragment {
         super.onDetach();
         if (mDisposable != null) {
             mDisposable.dispose();
-        }
-    }
-
-    private class OnCurrencySelectedListener implements AdapterView.OnItemSelectedListener {
-
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            Toast.makeText(getContext(), mSpinnerFrom.getSelectedItemPosition() + " " + position, Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) {
         }
     }
 }
