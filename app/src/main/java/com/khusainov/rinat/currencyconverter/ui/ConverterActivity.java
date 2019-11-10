@@ -1,4 +1,4 @@
-package com.khusainov.rinat.currencyconverter.presentation;
+package com.khusainov.rinat.currencyconverter.ui;
 
 import androidx.fragment.app.Fragment;
 

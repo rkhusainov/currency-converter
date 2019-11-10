@@ -1,4 +1,6 @@
-package com.khusainov.rinat.currencyconverter.data.model;
+package com.khusainov.rinat.currencyconverter.model;
+
+import androidx.annotation.NonNull;
 
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
@@ -12,6 +14,7 @@ public class CurrencyResponse {
     @ElementList(inline = true)
     private List<CurrencyData> mCurrencyList;
 
+    @NonNull
     public List<CurrencyData> getCurrencyList() {
         return new ArrayList<>(mCurrencyList);
     }

@@ -5,4 +5,6 @@
     <string name="convert_to">Конвертировать в:</string>
     <string name="write_sum">Введите сумму</string>
     <string name="response_error">Ошибка запроса</string>
+    <string name="russian_ruble">Российский рубль</string>
+    <string name="convert">Конвертировать</string>
 </resources>

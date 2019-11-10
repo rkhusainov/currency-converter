@@ -8,4 +8,8 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="ConvertHeader">
+        <item name="android:textSize">@dimen/textSizeLarge</item>
+    </style>
+
 </resources>
