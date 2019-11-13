@@ -12,7 +12,7 @@ import java.util.List;
 
 public class CurrencyAdapter extends BaseAdapter {
 
-    private final List<CurrencyData> mCurrencies;
+    private List<CurrencyData> mCurrencies;
 
     public CurrencyAdapter(List<CurrencyData> currencies) {
         mCurrencies = currencies;
@@ -38,20 +38,19 @@ public class CurrencyAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = LayoutInflater.from(parent.getContext())
                     .inflate(android.R.layout.simple_spinner_dropdown_item, parent, false);
-            CurrencyHolder holder = new CurrencyHolder(convertView);
-            convertView.setTag(holder);
+            CurrencyHolder currencyHolder = new CurrencyHolder(convertView);
+            convertView.setTag(currencyHolder);
         }
 
         CurrencyData currency = getItem(position);
-        CurrencyHolder holder = (CurrencyHolder) convertView.getTag();
+        CurrencyHolder currencyHolder = (CurrencyHolder) convertView.getTag();
         if (currency != null) {
-            String text = currency.getName();
-            holder.mCurrencyName.setText(text);
+            currencyHolder.mCurrencyName.setText(currency.getName());
         }
         return convertView;
     }
 
-    private static class CurrencyHolder {
+    private class CurrencyHolder {
         private TextView mCurrencyName;
 
         private CurrencyHolder(View view) {

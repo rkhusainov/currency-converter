@@ -1,10 +1,11 @@
 package com.khusainov.rinat.currencyconverter.ui;
 
+import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,23 +17,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.khusainov.rinat.currencyconverter.ConversionHelper;
 import com.khusainov.rinat.currencyconverter.R;
 import com.khusainov.rinat.currencyconverter.model.CurrencyData;
-import com.khusainov.rinat.currencyconverter.model.CurrencyResponse;
-import com.khusainov.rinat.currencyconverter.utils.ApiUtils;
+import com.khusainov.rinat.currencyconverter.utils.ResourceWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
-
-import static android.content.ContentValues.TAG;
-
-public class ConverterFragment extends Fragment {
+public class ConverterFragment extends Fragment implements ICurrencyView {
 
     private Spinner mSpinnerFrom;
     private Spinner mSpinnerTo;
@@ -41,13 +33,20 @@ public class ConverterFragment extends Fragment {
     private TextView mConversionRateTextView;
     private Button mConvertButton;
     private View mLoadingView;
-    private List<CurrencyData> mCurrencyDataList = new ArrayList<>();
-    private Disposable mDisposable;
+    private View mContentView;
+    private View mErrorView;
+    private List<CurrencyData> mCurrencies = new ArrayList<>();
 
-    private ConversionHelper mConversionHelper = new ConversionHelper();
+    private CurrencyPresenter mCurrencyPresenter;
 
     public static ConverterFragment newInstance() {
         return new ConverterFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mCurrencyPresenter = new CurrencyPresenter(this, new ResourceWrapper(getResources()));
     }
 
     @Override
@@ -58,6 +57,7 @@ public class ConverterFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         mSpinnerFrom = view.findViewById(R.id.spinner_from);
         mSpinnerTo = view.findViewById(R.id.spinner_to);
         mFromAmount = view.findViewById(R.id.from_amount);
@@ -65,84 +65,102 @@ public class ConverterFragment extends Fragment {
         mConversionRateTextView = view.findViewById(R.id.tv_conversion_rate);
         mConvertButton = view.findViewById(R.id.btn_convert);
         mLoadingView = view.findViewById(R.id.loading_view);
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        loadCurrencies();
-        initSpinnerFrom();
-        initSpinnerTo();
+        mContentView = view.findViewById(R.id.content_layout);
+        mErrorView = view.findViewById(R.id.errorView);
 
         mConvertButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String converted =
-                        mConversionHelper.convert(
-                                mCurrencyDataList,
-                                mSpinnerFrom.getSelectedItemPosition(),
-                                mSpinnerTo.getSelectedItemPosition(),
-                                Double.parseDouble(mFromAmount.getText().toString()));
-//                mResultTextView.setText(converted);
-
-                Toast.makeText(getContext(), mCurrencyDataList.get(0).getName(), Toast.LENGTH_SHORT).show();
+                if (!mFromAmount.getText().toString().isEmpty()) {
+                    updateResult();
+                    hideKeyBoard();
+                } else {
+                    Toast.makeText(getContext(), getResources().getString(R.string.enter_amount_of_currency), Toast.LENGTH_SHORT).show();
+                }
             }
         });
+    }
+
+    private void updateResult() {
+        mCurrencyPresenter.convert(
+                mCurrencies,
+                mSpinnerFrom.getSelectedItemPosition(),
+                mSpinnerTo.getSelectedItemPosition(),
+                Double.parseDouble(mFromAmount.getText().toString()));
+    }
+
+    private void hideKeyBoard() {
+        InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
+                InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mCurrencyPresenter.loadCurrencies();
     }
 
     private void initSpinnerFrom() {
-        mSpinnerFrom.setAdapter(new CurrencyAdapter(mCurrencyDataList));
-        mSpinnerFrom.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getContext(), "SELECT 1", Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "onItemSelected: " + position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
+        mSpinnerFrom.setOnItemSelectedListener(new OnCurrencySelectedListener());
+        mSpinnerFrom.setAdapter(new CurrencyAdapter(mCurrencies));
     }
 
     private void initSpinnerTo() {
-        mSpinnerTo.setAdapter(new CurrencyAdapter(mCurrencyDataList));
-        mSpinnerTo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getContext(), "SELECT 2", Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "onItemSelected: " + position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
+        mSpinnerTo.setOnItemSelectedListener(new OnCurrencySelectedListener());
+        mSpinnerTo.setAdapter(new CurrencyAdapter(mCurrencies));
+        mSpinnerTo.setSelection(1);
     }
 
 
-    public void loadCurrencies() {
-        mDisposable = ApiUtils.getApi().loadCurrencies()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<CurrencyResponse>() {
-                    @Override
-                    public void accept(CurrencyResponse currencyResponse) throws Exception {
-                        mCurrencyDataList.addAll(currencyResponse.getCurrencyList());
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        Toast.makeText(getContext(), "Error request", Toast.LENGTH_SHORT).show();
-                    }
-                });
+    @Override
+    public void showProgress() {
+        mLoadingView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgress() {
+        mLoadingView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showError() {
+        mContentView.setVisibility(View.GONE);
+        mErrorView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showData(List<CurrencyData> currencies) {
+        mCurrencies.addAll(currencies);
+        initSpinnerFrom();
+        initSpinnerTo();
+        mContentView.setVisibility(View.VISIBLE);
+        mErrorView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showConverted(String number, String rate) {
+        mResultTextView.setText(number);
+        mConversionRateTextView.setText(rate);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        if (mDisposable != null) {
-            mDisposable.dispose();
+        mCurrencyPresenter.onHandleDetach();
+    }
+
+    private class OnCurrencySelectedListener implements AdapterView.OnItemSelectedListener {
+
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            if (!mFromAmount.getText().toString().isEmpty()) {
+                updateResult();
+            }
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
         }
     }
 }

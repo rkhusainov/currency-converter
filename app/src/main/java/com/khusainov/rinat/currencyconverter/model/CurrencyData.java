@@ -29,6 +29,14 @@ public class CurrencyData {
     public CurrencyData() {
     }
 
+    public CurrencyData(String id, String charCode, long nominal, String name, BigDecimal value) {
+        mId = id;
+        mCharCode = charCode;
+        mNominal = nominal;
+        mName = name;
+        mValue = value;
+    }
+
     public String getId() {
         return mId;
     }

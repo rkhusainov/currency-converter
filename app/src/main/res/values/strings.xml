@@ -7,4 +7,8 @@
     <string name="response_error">Ошибка запроса</string>
     <string name="russian_ruble">Российский рубль</string>
     <string name="convert">Конвертировать</string>
+    <string name="check_internet_connection">Проверьте подключение к интернет…</string>
+    <string name="you_will_get">Вы получите %1$s %2$s</string>
+    <string name="conversion_rate">Курс конверсии: %1$s %2$s/%3$s</string>
+    <string name="enter_amount_of_currency">Введите количество валюты</string>
 </resources>
