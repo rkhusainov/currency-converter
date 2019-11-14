@@ -15,8 +15,8 @@
         tools:ignore="GoogleAppIndexingWarning"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".common.SingleFragmentActivity" />
-        <activity android:name=".ui.ConverterActivity">
+        <activity android:name=".presentation.common.SingleFragmentActivity" />
+        <activity android:name=".presentation.ConverterActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

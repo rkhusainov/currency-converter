@@ -1,4 +1,4 @@
-package com.khusainov.rinat.currencyconverter.ui;
+package com.khusainov.rinat.currencyconverter.presentation;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -18,8 +18,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.khusainov.rinat.currencyconverter.R;
-import com.khusainov.rinat.currencyconverter.model.CurrencyData;
-import com.khusainov.rinat.currencyconverter.utils.ResourceWrapper;
+import com.khusainov.rinat.currencyconverter.data.model.CurrencyData;
+import com.khusainov.rinat.currencyconverter.presentation.utils.ResourceWrapper;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.khusainov.rinat.currencyconverter.ui;
+package com.khusainov.rinat.currencyconverter.presentation;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.khusainov.rinat.currencyconverter.model.CurrencyData;
+import com.khusainov.rinat.currencyconverter.data.model.CurrencyData;
 
 import java.util.List;
 

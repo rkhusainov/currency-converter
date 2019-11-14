@@ -1,4 +1,4 @@
-package com.khusainov.rinat.currencyconverter.model;
+package com.khusainov.rinat.currencyconverter.data.model;
 
 import androidx.annotation.NonNull;
 

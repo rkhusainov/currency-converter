@@ -1,4 +1,4 @@
-package com.khusainov.rinat.currencyconverter.utils;
+package com.khusainov.rinat.currencyconverter.presentation.utils;
 
 import android.content.res.Resources;
 

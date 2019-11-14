@@ -1,6 +1,6 @@
-package com.khusainov.rinat.currencyconverter.utils;
+package com.khusainov.rinat.currencyconverter.presentation.utils;
 
-import com.khusainov.rinat.currencyconverter.api.ICurrencyApiService;
+import com.khusainov.rinat.currencyconverter.presentation.api.ICurrencyApiService;
 
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.convert.AnnotationStrategy;

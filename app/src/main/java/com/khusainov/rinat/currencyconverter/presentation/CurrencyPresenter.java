@@ -1,10 +1,10 @@
-package com.khusainov.rinat.currencyconverter.ui;
+package com.khusainov.rinat.currencyconverter.presentation;
 
-import com.khusainov.rinat.currencyconverter.model.CurrencyData;
-import com.khusainov.rinat.currencyconverter.model.CurrencyResponse;
-import com.khusainov.rinat.currencyconverter.utils.ApiUtils;
-import com.khusainov.rinat.currencyconverter.utils.CurrencyConverter;
-import com.khusainov.rinat.currencyconverter.utils.IResourceWrapper;
+import com.khusainov.rinat.currencyconverter.data.model.CurrencyData;
+import com.khusainov.rinat.currencyconverter.data.model.CurrencyResponse;
+import com.khusainov.rinat.currencyconverter.presentation.utils.ApiUtils;
+import com.khusainov.rinat.currencyconverter.presentation.utils.CurrencyConverter;
+import com.khusainov.rinat.currencyconverter.presentation.utils.IResourceWrapper;
 
 import java.math.BigDecimal;
 import java.util.List;

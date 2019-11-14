@@ -1,9 +1,9 @@
-package com.khusainov.rinat.currencyconverter.utils;
+package com.khusainov.rinat.currencyconverter.presentation.utils;
 
 import androidx.annotation.Nullable;
 
 import com.khusainov.rinat.currencyconverter.R;
-import com.khusainov.rinat.currencyconverter.model.CurrencyData;
+import com.khusainov.rinat.currencyconverter.data.model.CurrencyData;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.khusainov.rinat.currencyconverter.utils;
+package com.khusainov.rinat.currencyconverter.presentation.utils;
 
 import org.simpleframework.xml.convert.Converter;
 import org.simpleframework.xml.stream.InputNode;

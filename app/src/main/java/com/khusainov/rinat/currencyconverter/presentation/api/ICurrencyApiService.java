@@ -1,6 +1,6 @@
-package com.khusainov.rinat.currencyconverter.api;
+package com.khusainov.rinat.currencyconverter.presentation.api;
 
-import com.khusainov.rinat.currencyconverter.model.CurrencyResponse;
+import com.khusainov.rinat.currencyconverter.data.model.CurrencyResponse;
 
 import io.reactivex.Single;
 import retrofit2.http.GET;

@@ -1,6 +1,6 @@
-package com.khusainov.rinat.currencyconverter.model;
+package com.khusainov.rinat.currencyconverter.data.model;
 
-import com.khusainov.rinat.currencyconverter.utils.BigDecimalConverter;
+import com.khusainov.rinat.currencyconverter.presentation.utils.BigDecimalConverter;
 
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;

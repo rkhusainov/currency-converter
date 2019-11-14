@@ -1,6 +1,6 @@
-package com.khusainov.rinat.currencyconverter.ui;
+package com.khusainov.rinat.currencyconverter.presentation;
 
-import com.khusainov.rinat.currencyconverter.model.CurrencyData;
+import com.khusainov.rinat.currencyconverter.data.model.CurrencyData;
 
 import java.util.List;
 
