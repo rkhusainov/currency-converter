@@ -2,6 +2,7 @@ package com.khusainov.rinat.currencyconverter.presentation;
 
 import com.khusainov.rinat.currencyconverter.data.model.CurrencyData;
 import com.khusainov.rinat.currencyconverter.data.model.CurrencyResponse;
+import com.khusainov.rinat.currencyconverter.data.repository.CurrencyRepository;
 import com.khusainov.rinat.currencyconverter.presentation.utils.ApiUtils;
 import com.khusainov.rinat.currencyconverter.presentation.utils.CurrencyConverter;
 import com.khusainov.rinat.currencyconverter.presentation.utils.IResourceWrapper;
@@ -21,9 +22,11 @@ public class CurrencyPresenter {
     private ICurrencyView mCurrencyView;
     private IResourceWrapper mIResourceWrapper;
     private CurrencyConverter mCurrencyConverter;
+    private CurrencyRepository mRepository;
 
-    public CurrencyPresenter(ICurrencyView currencyView, IResourceWrapper resourceWrapper) {
+    public CurrencyPresenter(ICurrencyView currencyView, CurrencyRepository currencyRepository, IResourceWrapper resourceWrapper) {
         mCurrencyView = currencyView;
+        mRepository = currencyRepository;
         mIResourceWrapper = resourceWrapper;
         mCurrencyConverter = new CurrencyConverter(mIResourceWrapper);
     }
@@ -35,7 +38,7 @@ public class CurrencyPresenter {
     }
 
     public void loadCurrencies() {
-        mDisposable = ApiUtils.getApi().loadCurrencies()
+        mDisposable = mRepository.getCurrencies()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(new Consumer<Disposable>() {
@@ -50,10 +53,9 @@ public class CurrencyPresenter {
                         mCurrencyView.hideProgress();
                     }
                 })
-                .subscribe(new Consumer<CurrencyResponse>() {
+                .subscribe(new Consumer<List<CurrencyData>>() {
                     @Override
-                    public void accept(CurrencyResponse currencyResponse) throws Exception {
-                        List<CurrencyData> currencies = currencyResponse.getCurrencyList();
+                    public void accept(List<CurrencyData> currencies) throws Exception {
                         addRussianCurrency(currencies);
                         mCurrencyView.showData(currencies);
                     }

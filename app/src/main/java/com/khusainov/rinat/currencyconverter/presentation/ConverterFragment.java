@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 
 import com.khusainov.rinat.currencyconverter.R;
 import com.khusainov.rinat.currencyconverter.data.model.CurrencyData;
+import com.khusainov.rinat.currencyconverter.data.repository.CurrencyRepository;
 import com.khusainov.rinat.currencyconverter.presentation.utils.ResourceWrapper;
 
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ public class ConverterFragment extends Fragment implements ICurrencyView {
     private View mContentView;
     private View mErrorView;
     private List<CurrencyData> mCurrencies = new ArrayList<>();
+    private CurrencyRepository mCurrencyRepository;
 
     private CurrencyPresenter mCurrencyPresenter;
 
@@ -46,7 +48,8 @@ public class ConverterFragment extends Fragment implements ICurrencyView {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCurrencyPresenter = new CurrencyPresenter(this, new ResourceWrapper(getResources()));
+        mCurrencyRepository = new CurrencyRepository();
+        mCurrencyPresenter = new CurrencyPresenter(this, mCurrencyRepository, new ResourceWrapper(getResources()));
     }
 
     @Override
